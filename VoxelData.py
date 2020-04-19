@@ -48,7 +48,7 @@ class VoxelData():
             return self.has_voxel(neighbor_coord)
 
 
-    def make_faces(self, voxel_coords):
+    def make_face_verts(self, voxel_coords):
         cube = []
         for direction in range(len(CubeData.direction)):
             if np.any(self.get_neighbor(voxel_coords, direction)):
@@ -62,10 +62,9 @@ class VoxelData():
         edge_verts = []
         num_voxels = np.size(self.xyz, 1)
         for voxel in range(num_voxels):
-            foo = self.make_faces(self.xyz[:, voxel])
-            edge_verts = np.append(edge_verts, foo)
+            faces = self.make_face_verts(self.xyz[:, voxel])
+            edge_verts = np.append(edge_verts, faces)
         return edge_verts
-
         
 
     
