@@ -13,6 +13,7 @@ class VoxelData():
 
     
     def __init__(self,data):
+        self.data = data
         self.xyz = self.get_coords(data)
         # self.x = self.xyz[0,:]
         # self.y = self.xyz[1,:]
@@ -20,18 +21,8 @@ class VoxelData():
         self.x_length = np.size(data,0)
         self.y_length = np.size(data,1)
         self.z_length = np.size(data,2)
-        self.vertices = self.make_edge_verts(self.xyz)
+        self.vertices = self.make_edge_verts()
         # self.triangles 
-
-        # xyz direction corresponding to 'Direction'
-        self.offsets = [             
-            [0, 0, 1],
-            [1, 0, 0],
-            [0, 0, -1],
-            [-1, 0, 0],
-            [0, 1, 0],
-            [0, -1, 0]
-        ]
 
 
     def get_coords(self, data):
@@ -39,35 +30,47 @@ class VoxelData():
         indices = np.stack((indices[0], indices[1],indices[2]))
         return indices
 
+    def has_voxel(self,neighbor_coord):
+        return self.data[neighbor_coord[0],neighbor_coord[1],neighbor_coord[2]]
 
-    def get_neighbor(self, xyz, direction):
-        x = xyz[0]
-        y = xyz[1]
-        z = xyz[2]
-        offset_to_check = offsets[direction]
+
+    def get_neighbor(self, voxel_coords, direction):
+        x = voxel_coords[0]
+        y = voxel_coords[1]
+        z = voxel_coords[2]
+        offset_to_check = CubeData.offsets[direction]
         neighbor_coord = [x+ offset_to_check[0], y+offset_to_check[1], z+offset_to_check[2]]
 
-        if (neighbor_coord[0] < 0 | neighbor_coord[0] >= self.x_length | neighbor_coord[1] < 0 | neighbor_coord[1] >= self.y_length | neighbor_coord[2] < 0 | neighbor_coord[2] >= self.z_length):
+        # return 0 if neighbor out of bounds or nonexistent
+        if (any(np.less(neighbor_coord,0)) | (neighbor_coord[0] >= self.x_length) | (neighbor_coord[1] >= self.y_length) | (neighbor_coord[2] >= self.z_length)):
             return 0
         else:
-            return get_voxel(x, y, z)
+            return self.has_voxel(neighbor_coord)
 
 
-    def make_verts(self, voxel_coords):
-        for direction in range(len(CubeData.Direction))
-            if voxel_coords
+    def make_faces(self, voxel_coords):
+        cube = []
+        for direction in range(len(CubeData.direction)):
+            if np.any(self.get_neighbor(voxel_coords, direction)):
+                continue
+            else: 
+                cube = np.append(cube,'face')
+        return cube
 
 
-    def make_edge_verts(self)
-        for voxel in range(np.size(self.xyz, 1))
-            make_verts(selx.xyz(:, voxel))
+    def make_edge_verts(self):
+        edge_verts = []
+        num_voxels = np.size(self.xyz, 1)
+        for voxel in range(num_voxels):
+            foo = self.make_faces(self.xyz[:, voxel])
+            edge_verts = np.append(edge_verts, foo)
+        return edge_verts
 
-        .
         
 
     
 class CubeData:
-    faceTriangles = {
+    face_triangles = {
 		'North':  [0, 1, 2, 3 ],
         'East': [ 5, 0, 3, 6 ],
 	    'South': [ 4, 5, 6, 7 ],
@@ -76,13 +79,23 @@ class CubeData:
         'Down': [ 3, 2, 7, 6 ]
 	}
 
-    Direction = [
+    direction = [
         'North',
         'East',
         'South',
         'West',
         'Up',
         'Down'
+    ]
+
+    # xyz direction corresponding to 'Direction'
+    offsets = [             
+        [0, 0, 1],
+        [1, 0, 0],
+        [0, 0, -1],
+        [-1, 0, 0],
+        [0, 1, 0],
+        [0, -1, 0]
     ]
 
 

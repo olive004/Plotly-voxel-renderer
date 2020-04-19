@@ -16,7 +16,6 @@ def load_data(opt):
 
     # Read in all numpy arrays in curr dir unless 'filename' was specified
     if not opt.file_name:         # if no filename given
-        print(opt.dataroot)
         assert os.path.isdir(opt.dataroot), '%s is not a valid directory' % opt.dataroot
 
         for root, dir, fnames in sorted(os.walk(opt.dataroot)):
@@ -30,7 +29,8 @@ def load_data(opt):
     # Make toy dataset if no files found or opt set
     if opt.toy_dataset | (not data_paths):
         d = opt.toy_dataset
-        data = np.floor(np.random.rand(d,d,d)*2)
+        data = np.floor(np.random.rand(d,d,d)*4)
+        data = data > 0
 
         print('Making toy dataset')
     else:
