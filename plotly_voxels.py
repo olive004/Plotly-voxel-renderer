@@ -14,15 +14,14 @@ if __name__ == "__main__":
     data = load_data(opt)
 
     Voxels = VoxelData(data)
-    # print("Voxels.og_data",Voxels.og_data)
-    print("Voxels.vertices",Voxels.vertices)
+    print("Voxels.data",Voxels.data)
 
-    # fig = go.Figure(data=go.Mesh3d(
-    #     x=Voxels.x,
-    #     y=Voxels.y,
-    #     z=Voxels.z
-    #     ))
-    # fig.show()
+    fig = go.Figure(data=go.Mesh3d(
+        x=Voxels.vertices[0],
+        y=Voxels.vertices[1],
+        z=Voxels.vertices[2]
+        ))
+    fig.show()
 
 
 
