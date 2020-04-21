@@ -16,14 +16,15 @@ class VoxelData():
         self.data = data
         self.triangles = np.zeros((np.size(np.shape(self.data)),1)) 
         self.xyz = self.get_coords()
-        self.triangles = np.delete(self.triangles, 0,1)
         # self.x = self.xyz[0,:]
         # self.y = self.xyz[1,:]
         # self.z = self.xyz[2,:]
         self.x_length = np.size(data,0)
         self.y_length = np.size(data,1)
         self.z_length = np.size(data,2)
+        self.vert_count = 0
         self.vertices = self.make_edge_verts()
+        self.triangles = np.delete(self.triangles, 0,1)
         #self.make_triangles()
 
 
@@ -71,36 +72,77 @@ class VoxelData():
         voxel_coords = self.xyz[:, voxel]
         explicit_dir = CubeData.direction[direction]
         vert_order = CubeData.face_triangles[explicit_dir]
-        next_triangles = np.add(vert_order, voxel)
 
-        next_i = [next_triangles[0], next_triangles[0]]
-        next_j = [next_triangles[1], next_triangles[2]]
-        next_k = [next_triangles[2], next_triangles[3]]
+        # next_triangles = np.add(vert_order, voxel)
+        # next_i = [next_triangles[0], next_triangles[0]]
+        # next_j = [next_triangles[1], next_triangles[2]]
+        # next_k = [next_triangles[2], next_triangles[3]]
+        
+        next_i = [self.vert_count, self.vert_count]
+        next_j = [self.vert_count+1, self.vert_count+2]
+        next_k = [self.vert_count+2, self.vert_count+3]
+
         next_tri = np.vstack((next_i, next_j, next_k))
         print("explicit_dir",explicit_dir)
         print("next_tri",next_tri)
-
         self.triangles = np.hstack((self.triangles, next_tri))
         # self.triangles = np.vstack((self.triangles, next_triangles))
-
 
         face_verts = np.zeros((len(voxel_coords),len(vert_order)))
         for i in range(len(vert_order)):
             face_verts[:,i] = voxel_coords + CubeData.cube_verts[vert_order[i]]   
-        print("face_verts",face_verts)         
+        print("face_verts",face_verts)  
+
+        self.vert_count = self.vert_count+4       
         return face_verts
+
+
+    def get_vert_count(self,directions):
+        # check for opposing sides as this automatically means there's 8 vertices
+        for opposing in CubeData.opposing_directions:
+            has_opposing = (opposing[0] in directions) & (opposing[1] in directions)
+            if has_opposing:
+                return 8
+        if len(directions) >= 4:
+            return 8
+        elif len(directions)==3:
+            return 7
+        elif len(directions)==2:
+            return 6
+        else:
+            return 4
+
+        return 0
+            
+
+
+    def make_cube(self, voxel, directions):
+        directions = directions.astype(int)
+        # retrieve explicit word direction
+        explicit_dirs=[]
+        for direcc in directions:
+            explicit_dirs = np.append(explicit_dirs, CubeData.direction[direcc])
+        vert_count = self.get_vert_count(explicit_dirs)    
+
+        return 0
 
 
     def make_cube_verts(self, voxel):
         voxel_coords = self.xyz[:, voxel]
         cube = np.zeros((len(voxel_coords), 1))
+
         # only make a new face if there's no neighbor in that direction
+        dirs_no_neighbor = []
         for direction in range(len(CubeData.direction)):
             if np.any(self.get_neighbor(voxel_coords, direction)):
                 continue
             else: 
+                dirs_no_neighbor = np.append(dirs_no_neighbor, direction)
                 face = self.make_face(voxel, direction)
                 cube = np.append(cube,face, axis=1)
+
+        # cube = self.make_cube(voxel, dirs_no_neighbor)
+
         # remove cube initialization
         cube = np.delete(cube, 0, 1) 
 
@@ -174,6 +216,12 @@ class CubeData:
         'West',
         'Up',
         'Down'
+    ]
+
+    opposing_directions = [
+        ['North','South'],
+        ['East','West'], 
+        ['Up', 'Down']
     ]
 
     # xyz direction corresponding to 'Direction'

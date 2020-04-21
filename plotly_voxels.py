@@ -14,9 +14,9 @@ if __name__ == "__main__":
     data = load_data(opt)
 
     Voxels = VoxelData(data)
-    print("Voxels.data\n",Voxels.data)
-    print("Voxels.vertices\n",Voxels.vertices)
-    print("Voxels.triangles\n",Voxels.triangles)
+    # print("Voxels.data\n",Voxels.data)
+    # print("Voxels.vertices\n",Voxels.vertices)
+    # print("Voxels.triangles\n",Voxels.triangles)
 
     fig = go.Figure(data=go.Mesh3d(
         x=Voxels.vertices[0],
