@@ -14,7 +14,9 @@ class VoxelData():
     
     def __init__(self,data):
         self.data = data
-        self.xyz = self.get_coords(data)
+        self.triangles = np.zeros((np.size(np.shape(self.data)),1)) 
+        self.xyz = self.get_coords()
+        self.triangles = np.delete(self.triangles, 0,1)
         # self.x = self.xyz[0,:]
         # self.y = self.xyz[1,:]
         # self.z = self.xyz[2,:]
@@ -22,12 +24,11 @@ class VoxelData():
         self.y_length = np.size(data,1)
         self.z_length = np.size(data,2)
         self.vertices = self.make_edge_verts()
-        self.triangles = [] #self.make_triangles()
-        # self.triangles 
+        #self.make_triangles()
 
 
-    def get_coords(self, data):
-        indices = np.nonzero(data)
+    def get_coords(self):
+        indices = np.nonzero(self.data)
         indices = np.stack((indices[0], indices[1],indices[2]))
         return indices
 
@@ -70,10 +71,23 @@ class VoxelData():
         voxel_coords = self.xyz[:, voxel]
         explicit_dir = CubeData.direction[direction]
         vert_order = CubeData.face_triangles[explicit_dir]
+        next_triangles = np.add(vert_order, voxel)
+
+        next_i = [next_triangles[0], next_triangles[0]]
+        next_j = [next_triangles[1], next_triangles[2]]
+        next_k = [next_triangles[2], next_triangles[3]]
+        next_tri = np.vstack((next_i, next_j, next_k))
+        print("explicit_dir",explicit_dir)
+        print("next_tri",next_tri)
+
+        self.triangles = np.hstack((self.triangles, next_tri))
+        # self.triangles = np.vstack((self.triangles, next_triangles))
+
 
         face_verts = np.zeros((len(voxel_coords),len(vert_order)))
         for i in range(len(vert_order)):
-            face_verts[:,i] = voxel_coords + CubeData.cube_verts[vert_order[i]]
+            face_verts[:,i] = voxel_coords + CubeData.cube_verts[vert_order[i]]   
+        print("face_verts",face_verts)         
         return face_verts
 
 
@@ -103,8 +117,7 @@ class VoxelData():
             cube = self.make_cube_verts(voxel)          # passing voxel num rather than 
             edge_verts = np.append(edge_verts, cube, axis=1)
         edge_verts = np.delete(edge_verts, 0,1)
-        return edge_verts
-        
+        return edge_verts        
 
 
     
@@ -122,13 +135,37 @@ class CubeData:
     cube_verts = [
         [1,1,1],
         [0,1,1], 
-        [0,0,1],
-        [1,0,1], 
         [0,1,0],
         [1,1,0],
+        [0,0,1],
+        [1,0,1],
         [1,0,0],
-        [0,0,0]
+        [0,0,0],
     ]
+
+    # cool twist
+    # cube_verts = [
+    #     [0,0,0],
+    #     [1,0,0],
+    #     [1,0,1], 
+    #     [0,0,1],
+    #     [0,1,1], 
+    #     [1,1,1],
+    #     [1,1,0],
+    #     [0,1,0],
+    # ]
+
+    # og
+    # cube_verts = [
+    #     [1,1,1],
+    #     [0,1,1], 
+    #     [0,0,1],
+    #     [1,0,1], 
+    #     [0,1,0],
+    #     [1,1,0],
+    #     [1,0,0],
+    #     [0,0,0]
+    # ]
 
     direction = [
         'North',
@@ -140,13 +177,21 @@ class CubeData:
     ]
 
     # xyz direction corresponding to 'Direction'
-    offsets = [             
-        [0, 0, 1],
-        [1, 0, 0],
-        [0, 0, -1],
+    offsets = [  
+        [0, 1, 0], 
+        [1, 0, 0],   
+        [0, -1, 0],
         [-1, 0, 0],
-        [0, 1, 0],
-        [0, -1, 0]
+        [0, 0, 1],
+        [0, 0, -1],
     ]
+    # offsets = [             
+    #     [0, 0, 1],
+    #     [1, 0, 0],
+    #     [0, 0, -1],
+    #     [-1, 0, 0],
+    #     [0, 1, 0],
+    #     [0, -1, 0]
+    # ]
 
 
