@@ -15,7 +15,7 @@ class Options():
         self.initialized = False
 
     def initialize(self):
-        self.parser.add_argument('--dataroot', type=str, default='./', help='Path to input folderz with ur 3d numpies :3')
+        self.parser.add_argument('-dir', '--dataroot', type=str, default='./', help='Path to input folderz with ur 3d numpies :3')
         self.parser.add_argument('-f', '--file_name', type=str, default='', help='Name of file you wanna visualize')
         self.parser.add_argument('-out', '--output_dir', type=str, default="voxel_graph", help='Folder name you want as the directory to export to (don\'t include / in front of it)')
         self.parser.add_argument('-toy', '--toy_dataset', type=int, default=False, help='To test voxel graphics with random voxel cube, input cube dimension (1 int)')

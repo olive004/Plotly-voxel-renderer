@@ -18,6 +18,7 @@ if __name__ == "__main__":
     # print("Voxels.vertices\n",Voxels.vertices)
     # print("Voxels.triangles\n",Voxels.triangles)
 
+    print("Generating figure")
     fig = go.Figure(data=go.Mesh3d(
         x=Voxels.vertices[0],
         y=Voxels.vertices[1],
