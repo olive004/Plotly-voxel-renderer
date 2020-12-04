@@ -6,7 +6,7 @@ Run plotly_voxels in your command-line with options specifying input numpy files
 
 ``` 
 $ git clone https://github.com/olive004/plotly_voxel_display.git
-$ python3 plotly_voxels -f My3DNumpyArray.npy
+$ python3 generate_plotly_voxels -f My3DNumpyArray.npy
 ```
 
 
