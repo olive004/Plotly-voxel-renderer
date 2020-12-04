@@ -11,5 +11,5 @@ $ python3 plotly_voxels -f My3DNumpyArray.npy
 
 
 ### Examples
-Find an example on our github.io (medical image segmentation via deep learning)[https://3d-mri-tissue-segmentation.github.io/]! 
+Find an example on our github.io [medical image segmentation via deep learning](https://3d-mri-tissue-segmentation.github.io/)!
 The graphs show the predicted 3D volume at different stages of learning.
