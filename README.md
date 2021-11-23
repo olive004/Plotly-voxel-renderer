@@ -1,7 +1,10 @@
-# Welcome and visualise your plotly voxels today!
+# Visualising voxels with Plotly
 
 
 ### How to use:
+Render 3D numpy objects as voxels with plotly. 
+Input: Numpy object file 
+Outpu: Plotly html embedding
 Run plotly_voxels in your command-line with options specifying input numpy files.
 
 ``` 
